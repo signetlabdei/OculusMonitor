@@ -9,6 +9,7 @@
 #pragma once
 #include "OVR_CAPI.h"
 #include "Extras/OVR_Math.h"
+#include <fstream>
 #include <vector>
 
 struct VRState
