@@ -9,6 +9,7 @@
 #include "vrstate.h"
 #include <fstream>
 #include <string>
+#include <chrono>
 
 StateManager::StateManager() : m_pollState(e_live), m_current(0)
 {
@@ -45,7 +46,8 @@ VRState StateManager::poll(ovrSession hmd, double time)
 			state.sensorDesc[i] = ovr_GetTrackerDesc(hmd, i);
 			state.sensorPose[i] = ovr_GetTrackerPose(hmd, i);
 		}
-		state.time = time;
+		// state.time = time;
+		state.time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	}
 	else
 	{
@@ -100,10 +102,11 @@ void StateManager::reset()
 void StateManager::exportCSV(const std::string &filename)
 {
 	std::fstream out(filename, std::ios::out);
-	out << "Time,RemoteButtons,TouchButtons,TouchTouches,LeftIndexTrigger,RightIndexTrigger,LeftHandTrigger,RightHandTrigger,LeftTouchPosX,LeftTouchPosY,LeftTouchPosZ,LeftTouchOrientationW,LeftTouchOrientationX,LeftTouchOrientationY,LeftTouchOrientationZ,RightTouchPosX,RightTouchPosY,RightTouchPosZ,RightTouchOrientationW,RightTouchOrientationX,RightTouchOrientationY,RightTouchOrientationZ,HeadPosX,HeadPosY,HeadPosZ,HeadOrientationW,HeadOrientationX,HeadOrientationY,HeadOrientationZ,Sensor0PosX, Sensor0PosY, Sensor0PosZ, Sensor0OrientationW, Sensor0OrientationX, Sensor0OrientationY, Sensor0OrientationZ,Sensor1PosX, Sensor1PosY, Sensor1PosZ, Sensor1OrientationW, Sensor1OrientationX, Sensor1OrientationY, Sensor1OrientationZ,Sensor2PosX, Sensor2PosY, Sensor2PosZ, Sensor2OrientationW, Sensor2OrientationX, Sensor2OrientationY, Sensor2OrientationZ,Sensor3PosX, Sensor3PosY, Sensor3PosZ, Sensor3OrientationW, Sensor3OrientationX, Sensor3OrientationY, Sensor3OrientationZ" << std::endl;
+	out << "GlobalTime,Time,RemoteButtons,TouchButtons,TouchTouches,LeftIndexTrigger,RightIndexTrigger,LeftHandTrigger,RightHandTrigger,LeftTouchPosX,LeftTouchPosY,LeftTouchPosZ,LeftTouchOrientationW,LeftTouchOrientationX,LeftTouchOrientationY,LeftTouchOrientationZ,RightTouchPosX,RightTouchPosY,RightTouchPosZ,RightTouchOrientationW,RightTouchOrientationX,RightTouchOrientationY,RightTouchOrientationZ,HeadPosX,HeadPosY,HeadPosZ,HeadOrientationW,HeadOrientationX,HeadOrientationY,HeadOrientationZ,Sensor0PosX, Sensor0PosY, Sensor0PosZ, Sensor0OrientationW, Sensor0OrientationX, Sensor0OrientationY, Sensor0OrientationZ,Sensor1PosX, Sensor1PosY, Sensor1PosZ, Sensor1OrientationW, Sensor1OrientationX, Sensor1OrientationY, Sensor1OrientationZ,Sensor2PosX, Sensor2PosY, Sensor2PosZ, Sensor2OrientationW, Sensor2OrientationX, Sensor2OrientationY, Sensor2OrientationZ,Sensor3PosX, Sensor3PosY, Sensor3PosZ, Sensor3OrientationW, Sensor3OrientationX, Sensor3OrientationY, Sensor3OrientationZ" << std::endl;
 	for (int i = 0; i < m_samples.size(); ++i)
 	{
 		VRState &s = m_samples[i];
+		out << std::chrono::system_clock::now () << ",";
 		out << s.time << ",";
 		out << s.remoteButtons << ",";
 		out << s.touchButtons << ",";

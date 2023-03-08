@@ -13,7 +13,7 @@
 
 struct VRState
 {
-	float time;
+	uint64_t time;
 	unsigned int remoteButtons;
 	unsigned int touchButtons;
 	unsigned int touchTouch;
