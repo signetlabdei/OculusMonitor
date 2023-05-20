@@ -3,19 +3,20 @@
 import pyshark
 import csv
 import datetime
-from progress.bar import Bar
+from progress.bar import IncrementalBar
+
+# update accordingly
+capture = pyshark.FileCapture('test.pcap') #Input .pcap file
+csvFile = "trace.csv" # Output file
+srcAddress = "host" # Computer Address
+dstAddress = "2.8.2" # VR Address
+totPackets = 684336 # Total number of packets on the .pcap file
 
 def timestamp(dt):
     epoch = datetime.datetime.utcfromtimestamp(0)
     return (dt - epoch).total_seconds() * 1000.0
 
-capture = pyshark.FileCapture('test.pcap')
-csvFile = "trace2.csv"
-srcAddress = "host"
-dstAddress = "2.8.2"
-totPackets = 684336
-
-with Bar('Processing...', max = totPackets) as bar:
+with IncrementalBar('Processing...', max = totPackets, suffix='%(percent).1f%% - %(elapsed)ds') as bar:
     with open(csvFile, "w") as output:
         header = "time,size,direction \n"
         output.write(header)
